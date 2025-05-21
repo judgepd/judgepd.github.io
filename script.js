@@ -1,33 +1,48 @@
 document.getElementById('resourceForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault(); // Prevent default form submission
 
     // Get input values
     const blueBoxes = parseInt(document.getElementById('blueBoxes').value);
     const purpleBoxes = parseInt(document.getElementById('purpleBoxes').value);
     const goldBoxes = parseInt(document.getElementById('goldBoxes').value);
-    const wood = parseFloat(document.getElementById('wood').value);
-    const iron = parseFloat(document.getElementById('iron').value);
-    const electricity = parseFloat(document.getElementById('electricity').value);
+    const woodAmount = parseFloat(document.getElementById('woodAmount').value);
+    const ironAmount = parseFloat(document.getElementById('ironAmount').value);
+    const electricityAmount = parseFloat(document.getElementById('electricityAmount').value);
     const resourceRequired = parseFloat(document.getElementById('resourceRequired').value);
 
-    // Calculate box_total
+    // Input validation (additional to HTML5 validation)
+    if (isNaN(blueBoxes) || isNaN(purpleBoxes) || isNaN(goldBoxes) ||
+        !Number.isInteger(blueBoxes) || !Number.isInteger(purpleBoxes) || !Number.isInteger(goldBoxes) ||
+        blueBoxes < 0 || purpleBoxes < 0 || goldBoxes < 0) {
+        alert("Please enter whole numbers for blue, purple, and gold boxes.");
+        return;
+    }
+
+    if (isNaN(woodAmount) || isNaN(ironAmount) || isNaN(electricityAmount) || isNaN(resourceRequired) ||
+        woodAmount < 0 || ironAmount < 0 || electricityAmount < 0 || resourceRequired < 0) {
+        alert("Please enter valid positive numbers for resource amounts and required resource.");
+        return;
+    }
+
+    // Calculations
     const box_total = ((blueBoxes * 10000) + (purpleBoxes * 100000) + (goldBoxes * 1000000)) / 1000000;
-
-    // Calculate resource_total
-    const resource_total = wood + iron + electricity;
-
-    // Calculate required_total
+    const resource_total = woodAmount + ironAmount + electricityAmount;
     const required_total = resourceRequired * 3;
+    const upgrade_amount = required_total - resource_total - box_total;
 
-    // Calculate remaining needed
-    const remaining_needed = required_total - resource_total - box_total;
+    // Display results
+    document.getElementById('boxTotalDisplay').textContent = box_total.toFixed(2); // Display with 2 decimal places
+    document.getElementById('resourceTotalDisplay').textContent = resource_total.toFixed(2);
+    document.getElementById('requiredTotalDisplay').textContent = required_total.toFixed(2);
 
-    // Display the results
-    document.getElementById('displayBoxTotal').textContent = box_total.toFixed(2); // Display with 2 decimal places
-    document.getElementById('displayResourceTotal').textContent = resource_total.toFixed(1); // Display with 1 decimal place
-    document.getElementById('displayRequiredTotal').textContent = required_total.toFixed(2); // Display with 2 decimal places
-    document.getElementById('displayRemainingNeeded').textContent = remaining_needed.toFixed(2); // Display with 2 decimal places
+    const upgradeAmountDisplay = document.getElementById('upgradeAmountDisplay');
+    upgradeAmountDisplay.classList.remove('red-text', 'green-text'); // Clear previous styling
 
-    // Optionally, you could make the results container visible if it was hidden initially
-    document.getElementById('results').style.display = 'block';
+    if (upgrade_amount > 0) {
+        upgradeAmountDisplay.textContent = `You are short by ${upgrade_amount.toFixed(1)} million`;
+        upgradeAmountDisplay.classList.add('red-text');
+    } else {
+        upgradeAmountDisplay.textContent = `You have enough resources to start building and will have ${Math.abs(upgrade_amount).toFixed(1)} million spare`;
+        upgradeAmountDisplay.classList.add('green-text');
+    }
 });
