@@ -86,17 +86,17 @@
             <input type="number" id="electricityAmount" name="electricityAmount" step="0.1" min="0" required>
 
             <label for="resourceRequired">Amount of Each Resource Required for Upgrade:</label>
-            <input type="number" id="resourceRequired" name="resourceRequired" step="any" min="0" required>
+            <input type="number" id="resourceRequired" name="resourceRequired" step="0.1" min="0" required>
 
             <button type="submit">Calculate Resources</button>
         </form>
 
         <div id="results" class="result-section">
             <h2>Calculation Results:</h2>
-            <p class="result-item">Box Total: <span id="boxTotalDisplay"></span></p>
-            <p class="result-item">Resource Total: <span id="resourceTotalDisplay"></span></p>
-            <p class="result-item">Required Total: <span id="requiredTotalDisplay"></span></p>
-            <p class="result-item">Upgrade Amount: <span id="upgradeAmountDisplay"></span></p>
+            <p class="result-item">Choice box total: <span id="boxTotalDisplay"></span></p>
+            <p class="result-item">Resource total: <span id="resourceTotalDisplay"></span></p>
+            <p class="result-item">Required total: <span id="requiredTotalDisplay"></span></p>
+            <p class="result-item">Result: <span id="upgradeAmountDisplay"></span></p>
         </div>
     </div>
 
