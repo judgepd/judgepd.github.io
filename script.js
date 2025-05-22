@@ -29,6 +29,7 @@ document.getElementById('resourceForm').addEventListener('submit', function(even
     const resource_total = woodAmount + ironAmount + electricityAmount;
     const required_total = resourceRequired * 3;
     const upgrade_amount = required_total - resource_total - box_total;
+	const rubies_required = upgrade_amount * 100;
 
     // Display results
     document.getElementById('boxTotalDisplay').textContent = box_total.toFixed(2); // Display with 2 decimal places
@@ -39,7 +40,7 @@ document.getElementById('resourceForm').addEventListener('submit', function(even
     upgradeAmountDisplay.classList.remove('red-text', 'green-text'); // Clear previous styling
 
     if (upgrade_amount > 0) {
-        upgradeAmountDisplay.textContent = `You are short by ${upgrade_amount.toFixed(1)} million`;
+	upgradeAmountDisplay.textContent = `You are short by ${upgrade_amount.toFixed(1)} million (or ${rubies_required.toFixed(0)} rubies)`;
         upgradeAmountDisplay.classList.add('red-text');
     } else {
         upgradeAmountDisplay.textContent = `You have enough resources to start building and will have ${Math.abs(upgrade_amount).toFixed(1)} million spare`;
