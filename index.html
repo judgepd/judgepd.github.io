@@ -1,105 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resource Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        input[type="number"] {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 18px;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .result-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        .result-item {
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        .red-text {
-            color: red;
-            font-weight: bold;
-        }
-        .green-text {
-            color: green;
-            font-weight: bold;
-        }
-    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Resource Upgrade Calculator</h1>
-        <form id="resourceForm">
-            <label for="blueBoxes">Number of Green Resource Choice Boxes:</label>
-            <input type="number" id="blueBoxes" name="blueBoxes" step="1" min="0" required>
 
-            <label for="purpleBoxes">Number of Blue Resource Choice Boxes:</label>
-            <input type="number" id="purpleBoxes" name="purpleBoxes" step="1" min="0" required>
-
-            <label for="goldBoxes">Number of Purple Resource Boxes:</label>
-            <input type="number" id="goldBoxes" name="goldBoxes" step="1" min="0" required>
-
-            <label for="woodAmount">Amount of Wood (in millions):</label>
-            <input type="number" id="woodAmount" name="woodAmount" step="0.1" min="0" required>
-
-            <label for="ironAmount">Amount of Iron (in millions):</label>
-            <input type="number" id="ironAmount" name="ironAmount" step="0.1" min="0" required>
-
-            <label for="electricityAmount">Amount of Electricity (in millions):</label>
-            <input type="number" id="electricityAmount" name="electricityAmount" step="0.1" min="0" required>
-
-            <label for="resourceRequired">Amount of Each Resource Required for Upgrade:</label>
-            <input type="number" id="resourceRequired" name="resourceRequired" step="0.1" min="0" required>
-
-            <button type="submit">Calculate Resources</button>
-        </form>
-
-        <div id="results" class="result-section">
-            <h2>Calculation Results:</h2>
-            <p class="result-item">Choice box total: <span id="boxTotalDisplay"></span></p>
-            <p class="result-item">Resource total: <span id="resourceTotalDisplay"></span></p>
-            <p class="result-item">Required total: <span id="requiredTotalDisplay"></span></p>
-            <p class="result-item">Result: <span id="upgradeAmountDisplay"></span></p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <script src="https://pvoutput.org/widget/inc.jsp"></script>
+<script src="https://pvoutput.org/widget/graph.jsp?sid=40802"></script>
+      
 </body>
 </html>
