@@ -9,6 +9,8 @@ document.getElementById('resourceForm').addEventListener('submit', function(even
     const ironAmount = parseFloat(document.getElementById('ironAmount').value);
     const electricityAmount = parseFloat(document.getElementById('electricityAmount').value);
     const resourceRequired = parseFloat(document.getElementById('resourceRequired').value);
+	
+	
 
     // Input validation (additional to HTML5 validation)
     if (isNaN(blueBoxes) || isNaN(purpleBoxes) || isNaN(goldBoxes) ||
