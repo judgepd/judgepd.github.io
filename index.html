@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Powick Ramblers | Walking Together</title>
+    <meta charset="UTF-8"> [cite: 1]
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> [cite: 1]
+    <title>Powick Ramblers | Walking Together</title> [cite: 1, 2]
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lexend:wght@500;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2d5a27;
-            --primary-hover: #1e3d1a;
-            --accent: #f4f7f1;
+            --primary: #2d5a27; [cite: 11]
+            --primary-hover: #1e3d1a; [cite: 13]
+            --accent: #f4f7f1; [cite: 3]
             --text-dark: #1a1a1a;
-            --text-light: #666;
+            --text-light: #666; [cite: 14]
             --white: #ffffff;
             --shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
 
         * {
             box-sizing: border-box;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; [cite: 11]
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.7;
+            font-family: 'Inter', sans-serif; [cite: 2]
+            line-height: 1.7; [cite: 3]
             color: var(--text-dark);
-            margin: 0;
+            margin: 0; [cite: 3]
             padding: 0;
             background-color: var(--white);
         }
 
-        /* Hero Header */
+        /* Gradient Header */
         header {
-            text-align: center;
-            padding: 60px 20px;
-            color: white;
-            clip-path: ellipse(150% 100% at 50% 0%); /* Modern curved bottom */
+            text-align: center; [cite: 4]
+            padding: 140px 20px; [cite: 5]
+            background: linear-gradient(135deg, #2d5a27 0%, #4a7c44 50%, #76a36f 100%);
+            color: white; [cite: 6]
+            clip-path: ellipse(150% 100% at 50% 0%);
+            margin-bottom: 30px; [cite: 6]
         }
 
         h1 {
             font-family: 'Lexend', sans-serif;
-            margin: 0;
-            font-size: 4rem;
+            margin: 0; [cite: 8]
+            font-size: 4rem; [cite: 8]
             letter-spacing: -2px;
             font-weight: 800;
         }
@@ -53,20 +55,19 @@
             margin-top: 10px;
         }
 
-        /* Content Area */
         .container {
-            max-width: 900px;
-            margin: -60px auto 40px; /* Overlaps the header slightly */
-            padding: 0 20px;
+            max-width: 900px; [cite: 3]
+            margin: -60px auto 40px;
+            padding: 0 20px; [cite: 9]
             position: relative;
             z-index: 10;
         }
 
         .content {
-            background: var(--white);
-            padding: 50px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
+            background: var(--white); [cite: 9]
+            padding: 50px; [cite: 9]
+            border-radius: 20px; [cite: 9]
+            box-shadow: var(--shadow); [cite: 9]
         }
 
         h2 {
@@ -78,63 +79,47 @@
 
         p {
             font-size: 1.1rem;
-            color: var(--text-light);
+            color: var(--text-light); [cite: 14]
             margin-bottom: 25px;
         }
 
-        /* Modern Buttons */
         .links-container {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-            margin-top: 40px;
+            display: flex; [cite: 10]
+            gap: 15px; [cite: 10]
+            justify-content: flex-start; [cite: 10]
+            flex-wrap: wrap; [cite: 10]
+            margin-top: 40px; [cite: 10]
         }
 
         .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 16px 32px;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1rem;
+            display: inline-block; [cite: 11]
+            background: var(--primary); [cite: 11]
+            color: white; [cite: 11]
+            padding: 16px 32px; [cite: 11]
+            text-decoration: none; [cite: 11]
+            border-radius: 12px; [cite: 11]
+            font-weight: 700; [cite: 11]
             box-shadow: 0 4px 14px rgba(45, 90, 39, 0.3);
         }
 
         .btn:hover {
-            background: var(--primary-hover);
+            background: var(--primary-hover); [cite: 13]
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(45, 90, 39, 0.4);
         }
 
         .btn-secondary {
-            background: var(--accent);
-            color: var(--primary);
-            box-shadow: none;
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8dc;
-            transform: translateY(-3px);
+            background: var(--accent); [cite: 3]
+            color: var(--primary); [cite: 11]
             box-shadow: none;
         }
 
         footer {
-            text-align: center;
+            text-align: center; [cite: 14]
             padding: 60px 20px;
-            font-size: 0.9rem;
-            color: var(--text-light);
+            font-size: 0.9rem; [cite: 14]
+            color: var(--text-light); [cite: 14]
             border-top: 1px solid #eee;
-        }
-
-        /* Responsive Tweaks */
-        @media (max-width: 600px) {
-            h1 { font-size: 2.5rem; }
-            .content { padding: 30px; }
-            .links-container { justify-content: center; }
-            .btn { width: 100%; text-align: center; }
         }
     </style>
 </head>
@@ -152,7 +137,7 @@
                 Based in Worcestershire, we are a friendly group of walkers who enjoy exploring the stunning trails of the Malvern Hills and the surrounding countryside. Our walks cater to all abilities, from gentle strolls to challenging climbs.
             </p>
 
-            <div class="links-container">
+            <div class="links-container"> [cite: 10]
                 <a href="https://docs.google.com/spreadsheets/d/1BEzHNrMLSIx871a4Kt70mHykAQ4YiOxCZpltKTIME6k/edit?usp=sharing" class="btn" target="view_current">Upcoming Walks</a>
                 <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn btn-secondary" target="add_new">Add a new walk</a>
             </div>
