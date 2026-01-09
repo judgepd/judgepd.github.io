@@ -1,151 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> [cite: 1]
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> [cite: 1]
-    <title>Powick Ramblers | Walking Together</title> [cite: 1, 2]
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lexend:wght@500;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Powick Ramblers | Walking Together</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lexend:wght@700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2d5a27; [cite: 11]
-            --primary-hover: #1e3d1a; [cite: 13]
-            --accent: #f4f7f1; [cite: 3]
-            --text-dark: #1a1a1a;
-            --text-light: #666; [cite: 14]
+            --bg-body: #f4f7f1;
+            --header-bg: #0f1f0d; /* Very deep green for maximum contrast */
+            --primary-green: #2d5a27;
+            --text-main: #111111;
+            --text-secondary: #444444;
             --white: #ffffff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.08);
-        }
-
-        * {
-            box-sizing: border-box;
-            transition: all 0.3s ease; [cite: 11]
         }
 
         body {
-            font-family: 'Inter', sans-serif; [cite: 2]
-            line-height: 1.7; [cite: 3]
-            color: var(--text-dark);
-            margin: 0; [cite: 3]
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin: 0;
             padding: 0;
-            background-color: var(--white);
+            background-color: var(--bg-body);
         }
 
-        /* Gradient Header */
+        /* HIGH-CONTRAST HEADER */
         header {
-            text-align: center; [cite: 4]
-            padding: 140px 20px; [cite: 5]
-            background: linear-gradient(135deg, #2d5a27 0%, #4a7c44 50%, #76a36f 100%);
-            color: white; [cite: 6]
+            text-align: center;
+            padding: 100px 20px;
+            /* Solid deep background for absolute text clarity */
+            background-color: var(--header-bg);
+            background: linear-gradient(180deg, #0a1409 0%, #152b12 100%);
+            color: var(--white);
             clip-path: ellipse(150% 100% at 50% 0%);
-            margin-bottom: 30px; [cite: 6]
+            margin-bottom: 30px;
         }
 
         h1 {
             font-family: 'Lexend', sans-serif;
-            margin: 0; [cite: 8]
-            font-size: 4rem; [cite: 8]
-            letter-spacing: -2px;
+            margin: 0;
+            font-size: 3.5rem;
             font-weight: 800;
+            letter-spacing: -1px;
+            /* Extra shadow to ensure letters are sharp */
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
         }
 
         header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            font-weight: 400;
-            margin-top: 10px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 15px;
+            color: #e8f5e9; /* Light mint tint for secondary text */
         }
 
+        /* Main Content Card */
         .container {
-            max-width: 900px; [cite: 3]
+            max-width: 800px;
             margin: -60px auto 40px;
-            padding: 0 20px; [cite: 9]
+            padding: 0 20px;
             position: relative;
             z-index: 10;
         }
 
         .content {
-            background: var(--white); [cite: 9]
-            padding: 50px; [cite: 9]
-            border-radius: 20px; [cite: 9]
-            box-shadow: var(--shadow); [cite: 9]
+            background: var(--white);
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
         h2 {
             font-family: 'Lexend', sans-serif;
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 20px;
+            font-size: 2.2rem;
+            color: var(--primary-green);
+            margin-top: 0;
         }
 
-        p {
-            font-size: 1.1rem;
-            color: var(--text-light); [cite: 14]
-            margin-bottom: 25px;
+        .content p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
         }
 
+        /* Navigation Buttons */
         .links-container {
-            display: flex; [cite: 10]
-            gap: 15px; [cite: 10]
-            justify-content: flex-start; [cite: 10]
-            flex-wrap: wrap; [cite: 10]
-            margin-top: 40px; [cite: 10]
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn {
-            display: inline-block; [cite: 11]
-            background: var(--primary); [cite: 11]
-            color: white; [cite: 11]
-            padding: 16px 32px; [cite: 11]
-            text-decoration: none; [cite: 11]
-            border-radius: 12px; [cite: 11]
-            font-weight: 700; [cite: 11]
-            box-shadow: 0 4px 14px rgba(45, 90, 39, 0.3);
+            display: inline-block;
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 18px 36px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
         }
 
         .btn:hover {
-            background: var(--primary-hover); [cite: 13]
+            background: #1e3d1a;
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(45, 90, 39, 0.4);
+            box-shadow: 0 8px 20px rgba(45, 90, 39, 0.3);
         }
 
         .btn-secondary {
-            background: var(--accent); [cite: 3]
-            color: var(--primary); [cite: 11]
-            box-shadow: none;
+            background: #f0f4ef;
+            color: var(--primary-green);
+        }
+
+        .btn-secondary:hover {
+            background: #e1e9df;
         }
 
         footer {
-            text-align: center; [cite: 14]
-            padding: 60px 20px;
-            font-size: 0.9rem; [cite: 14]
-            color: var(--text-light); [cite: 14]
-            border-top: 1px solid #eee;
+            text-align: center;
+            padding: 50px 20px;
+            font-weight: 500;
+            color: #777;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.6rem; }
+            header { padding: 80px 20px; }
+            .content { padding: 30px; }
+            .btn { width: 100%; text-align: center; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Powick Ramblers</h1> [cite: 1]
-        <p>Exploring the Malvern Hills and beyond</p> [cite: 1, 15]
+        <h1>Powick Ramblers</h1>
+        <p>Exploring the Malvern Hills and beyond</p>
     </header>
 
     <div class="container">
-        <main class="content"> [cite: 9]
-            <h2>Welcome to our Group</h2> [cite: 1]
+        <main class="content">
+            <h2>Welcome to our Group</h2>
             <p>
-                Based in Worcestershire, we are a friendly group of walkers who enjoy exploring the stunning trails of the Malvern Hills and the surrounding countryside. [cite: 15] Our walks cater to all abilities, from gentle strolls to challenging climbs. [cite: 15]
+                Based in Worcestershire, we are a friendly group of walkers who enjoy exploring the stunning trails of the Malvern Hills and the surrounding countryside. Our walks cater to all abilities, from gentle strolls to challenging climbs.
             </p>
 
-            <div class="links-container"> [cite: 10]
-                <a href="https://docs.google.com/spreadsheets/d/1BEzHNrMLSIx871a4Kt70mHykAQ4YiOxCZpltKTIME6k/edit?usp=sharing" class="btn" target="view_current">Upcoming Walks</a> [cite: 16]
-                <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn btn-secondary" target="add_new">Add new walk</a> [cite: 16]
+            <div class="links-container">
+                <a href="https://docs.google.com/spreadsheets/d/1BEzHNrMLSIx871a4Kt70mHykAQ4YiOxCZpltKTIME6k/edit?usp=sharing" class="btn" target="_blank">Upcoming Walks</a>
+                <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn btn-secondary" target="_blank">Add new walk</a>
             </div>
         </main>
     </div>
 
     <footer>
-        <p>&copy; 2026 Powick Ramblers. All walkers welcome.</p> [cite: 17]
+        <p>&copy; 2026 Powick Ramblers. All walkers welcome.</p>
     </footer>
 
 </body>
