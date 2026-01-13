@@ -11,6 +11,10 @@
 	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
   
   <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+  
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.0/css/responsive.dataTables.min.css" />
+
+<script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.min.js"></script>
 	
     <style>
         :root {
@@ -21,6 +25,10 @@
             --text-secondary: #444444;
             --white: #ffffff;
         }
+		
+		table.dataTable {
+			width: 100% !important;
+		}
 
         body {
             font-family: 'Inter', sans-serif;
@@ -195,7 +203,16 @@
     $('#myTable').DataTable({
         "pageLength": 25,
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        "order": [[ 0, "desc" ]] // Sorts the 1st column (index 0) descending
+        "order": [[ 0, "desc" ]],
+        "responsive": true,
+        "columnDefs": [
+            { "responsivePriority": 1, "targets": 0 }, // Date of walk
+            { "responsivePriority": 2, "targets": 3 }, // Meeting location
+            { "responsivePriority": 3, "targets": 2 }, // Meeting time
+            { "responsivePriority": 4, "targets": 1 }, // Added by
+            { "responsivePriority": 5, "targets": 4 }, // Length of walk
+            { "responsivePriority": 6, "targets": 5 }  // Useful information
+        ]
     });
   });
 </script>
