@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Powick Ramblers | Walking Together</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lexend:wght@700;800&display=swap" rel="stylesheet">
+	
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  
 	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
-	<script
-  src="https://code.jquery.com/jquery-3.7.1.js"
-  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-  crossorigin="anonymous"></script>
+  
+  <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+	
     <style>
         :root {
             --bg-body: #f4f7f1;
@@ -151,24 +152,23 @@
         <main class="content">
             <h2>Viewing walks</h2>
 
-  
-  <table id="myTable" class="display">
+    <table id="myTable" class="display">
   <thead>
     <tr>
-      <td>Date of walk</td>
-	  <td>Added by</td>
-      <td>Meeting time</td>
-      <td>Meeting location</td>
-	  <td>Length of walk</td>
-      <td>Useful information</td>
-	    </tr>
+      <th>Date of walk</th>
+	  <th>Added by</th>
+      <th>Meeting time</th>
+      <th>Meeting location</th>
+	  <th>Length of walk</th>
+      <th>Useful information</th>
+	</tr>
   </thead>
   <tbody data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8"
          data-sheetdb-sort-by="age"
          data-sheetdb-sort-order="desc">
     <tr>
       <td>{{Date of walk}}</td>
-      <td>{{Forename}}</td>
+      <td>{{Forename}} {{Surname}}</td>
       <td>{{Meeting time}}</td>
       <td>{{Meeting location}}</td>
 	  <td>{{Length of walk}}</td>
@@ -176,6 +176,7 @@
     </tr>
   </tbody>
 </table>
+
 <script src="https://sheetdb.io/handlebars.js"></script>
 
             <div class="links-container">
@@ -189,10 +190,14 @@
         <p>&copy; 2026 Powick Ramblers. All walkers welcome.</p>
     </footer>
 	
-	<script>
-	$(document).ready( function () {
-    $('#myTable').DataTable();
-} );
+<script>
+  window.addEventListener('sheetdb-downloaded', function() {
+    $('#myTable').DataTable({
+        "pageLength": 25,
+        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+        "order": [[ 0, "desc" ]] // Sorts the 1st column (index 0) descending
+    });
+  });
 </script>
 
 </body>
