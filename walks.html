@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Powick Ramblers | Walking Together</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lexend:wght@700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+	<script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
     <style>
         :root {
             --bg-body: #f4f7f1;
@@ -132,7 +138,7 @@
             .btn { width: 100%; text-align: center; }
         }
     </style>
-	<script src="https://sheetdb.io/handlebars.js"></script>
+
 </head>
 <body>
 
@@ -144,7 +150,33 @@
     <div class="container">
         <main class="content">
             <h2>Viewing walks</h2>
-  <script src="https://sheetdb.io/s/t/pmqysxaqyb9tk.js"></script>
+
+  
+  <table id="myTable" class="display">
+  <thead>
+    <tr>
+      <td>Date of walk</td>
+	  <td>Added by</td>
+      <td>Meeting time</td>
+      <td>Meeting location</td>
+	  <td>Length of walk</td>
+      <td>Useful information</td>
+	    </tr>
+  </thead>
+  <tbody data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8"
+         data-sheetdb-sort-by="age"
+         data-sheetdb-sort-order="desc">
+    <tr>
+      <td>{{Date of walk}}</td>
+      <td>{{Forename}}</td>
+      <td>{{Meeting time}}</td>
+      <td>{{Meeting location}}</td>
+	  <td>{{Length of walk}}</td>
+	  <td>{{Useful information}}</td>
+    </tr>
+  </tbody>
+</table>
+<script src="https://sheetdb.io/handlebars.js"></script>
 
             <div class="links-container">
                 <a href="https://judgepd.github.io/index.html" class="btn">Back</a>
@@ -156,6 +188,12 @@
     <footer>
         <p>&copy; 2026 Powick Ramblers. All walkers welcome.</p>
     </footer>
+	
+	<script>
+	$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
 
 </body>
 </html>
