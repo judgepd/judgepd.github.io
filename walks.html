@@ -189,6 +189,7 @@
       <th>Meeting location</th>
 	  <th>Length of walk</th>
       <th>Useful information</th>
+      <th>Add to calendar</th>
 	</tr>
   </thead>
   <tbody data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8"
@@ -202,6 +203,23 @@
       <td>{{Meeting location}}</td>
 	  <td>{{Length of walk}}</td>
 	  <td>{{Useful information}}</td>
+      <td>
+  <a class="cal-btn google" href="#" data-type="google" 
+     data-title="Walk: {{Meeting location}}" 
+     data-start="{{Date of walk}} {{Meeting time}}" 
+     data-loc="{{Meeting location}}" 
+     data-desc="Leader: {{Forename}} {{Surname}} - {{Mobile phone number}}">
+     G+
+  </a>
+
+  <a class="cal-btn apple" href="#" data-type="apple" 
+     data-title="Walk: {{Meeting location}}" 
+     data-start="{{Date of walk}} {{Meeting time}}" 
+     data-loc="{{Meeting location}}" 
+     data-desc="Leader: {{Forename}} {{Surname}} - {{Mobile phone number}}">
+     A+
+  </a>
+</td>
     </tr>
   </tbody>
 </table>
