@@ -223,20 +223,24 @@
       <td>{{Meeting location}}</td>
 	  <td>{{Length of walk}}</td>
 	  <td>{{Useful information}}</td>
-  <td>
+<td>
   <span class="cal-link g-cal" 
         data-type="google" 
-        data-title="Powick Ramblers: {{Meeting location}}" 
+        data-title="Powick Ramblers" 
         data-date="{{Date of walk}}" 
         data-time="{{Meeting time}}" 
-        data-loc="{{Meeting location}}">+</span>
+        data-loc="{{Meeting location}}"
+        data-info="{{Useful information}}"
+        data-leader="{{Forename}} {{Surname}}">+</span>
 
   <span class="cal-link a-cal" 
         data-type="apple" 
-        data-title="Powick Ramblers: {{Meeting location}}" 
+        data-title="Powick Ramblers" 
         data-date="{{Date of walk}}" 
         data-time="{{Meeting time}}" 
-        data-loc="{{Meeting location}}">+</span>
+        data-loc="{{Meeting location}}"
+        data-info="{{Useful information}}"
+        data-leader="{{Forename}} {{Surname}}">+</span>
 </td>
     </tr>
   </tbody>
@@ -279,31 +283,31 @@ document.addEventListener('click', function (e) {
     if (e.target.classList.contains('cal-link')) {
         const d = e.target.dataset;
         
-        // 1. Parse Date and Time safely
-        // This handles "DD/MM/YYYY" or "YYYY-MM-DD"
+        // Date parsing logic
         let parts = d.date.split(/[-/]/);
         let dateObj;
-        if (parts[0].length === 4) { // YYYY-MM-DD
+        if (parts[0].length === 4) { 
             dateObj = new Date(`${d.date} ${d.time}`);
-        } else { // DD/MM/YYYY
+        } else { 
             dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]} ${d.time}`);
         }
 
-        if (isNaN(dateObj)) {
-            console.error("Invalid Date detected:", d.date);
-            return;
-        }
+        if (isNaN(dateObj)) return;
 
-        // 2. Format for Calendar (ISO without symbols)
         const formatCal = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
         const start = formatCal(dateObj);
-        const end = formatCal(new Date(dateObj.getTime() + 7200000)); // 2 hours later
+        const end = formatCal(new Date(dateObj.getTime() + 7200000)); 
+
+        // Combine Leader and Useful Info for the description
+        const description = `Walk Leader: ${d.leader}\n\nNotes: ${d.info}`;
 
         if (d.type === 'google') {
-            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(d.title)}&dates=${start}/${end}&location=${encodeURIComponent(d.loc)}`;
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(d.title)}&dates=${start}/${end}&location=${encodeURIComponent(d.loc)}&details=${encodeURIComponent(description)}`;
             window.open(url, '_blank');
         } else {
-            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${d.title}\nDTSTART:${start}\nDTEND:${end}\nLOCATION:${d.loc}\nEND:VEVENT\nEND:VCALENDAR`;
+            // Apple .ics format (using \n for line breaks)
+            const icsDescription = description.replace(/\n/g, '\\n');
+            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${d.title}\nDTSTART:${start}\nDTEND:${end}\nLOCATION:${d.loc}\nDESCRIPTION:${icsDescription}\nEND:VEVENT\nEND:VCALENDAR`;
             const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
