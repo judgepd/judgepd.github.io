@@ -203,17 +203,19 @@
       <td>{{Meeting location}}</td>
 	  <td>{{Length of walk}}</td>
 	  <td>{{Useful information}}</td>
-   <td>
-  <span class="cal-link google-style" 
+  <td>
+  <span class="cal-link g-cal" 
         data-type="google" 
         data-title="Powick Ramblers: {{Meeting location}}" 
-        data-start="{{Date of walk}} {{Meeting time}}" 
+        data-date="{{Date of walk}}" 
+        data-time="{{Meeting time}}" 
         data-loc="{{Meeting location}}">+</span>
 
-  <span class="cal-link apple-style" 
+  <span class="cal-link a-cal" 
         data-type="apple" 
         data-title="Powick Ramblers: {{Meeting location}}" 
-        data-start="{{Date of walk}} {{Meeting time}}" 
+        data-date="{{Date of walk}}" 
+        data-time="{{Meeting time}}" 
         data-loc="{{Meeting location}}">+</span>
 </td>
     </tr>
@@ -253,31 +255,39 @@
 </script>
 
 <script>
-// This listens for clicks on the entire body but only reacts to our buttons
 document.addEventListener('click', function (e) {
     if (e.target.classList.contains('cal-link')) {
         const d = e.target.dataset;
         
-        // 1. Clean up the date format from the sheet
-        // We assume date is YYYY-MM-DD and time is HH:MM
-        const startRaw = new Date(d.start.replace(/-/g, '/')); 
-        if (isNaN(startRaw)) {
-            alert("Date format not recognized. Please use YYYY-MM-DD");
+        // 1. Parse Date and Time safely
+        // This handles "DD/MM/YYYY" or "YYYY-MM-DD"
+        let parts = d.date.split(/[-/]/);
+        let dateObj;
+        if (parts[0].length === 4) { // YYYY-MM-DD
+            dateObj = new Date(`${d.date} ${d.time}`);
+        } else { // DD/MM/YYYY
+            dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]} ${d.time}`);
+        }
+
+        if (isNaN(dateObj)) {
+            console.error("Invalid Date detected:", d.date);
             return;
         }
 
-        const startDate = startRaw.toISOString().replace(/-|:|\.\d+/g, '');
-        const endDate = new Date(startRaw.getTime() + 7200000).toISOString().replace(/-|:|\.\d+/g, '');
+        // 2. Format for Calendar (ISO without symbols)
+        const formatCal = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
+        const start = formatCal(dateObj);
+        const end = formatCal(new Date(dateObj.getTime() + 7200000)); // 2 hours later
 
         if (d.type === 'google') {
-            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(d.title)}&dates=${startDate}/${endDate}&location=${encodeURIComponent(d.loc)}`;
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(d.title)}&dates=${start}/${end}&location=${encodeURIComponent(d.loc)}`;
             window.open(url, '_blank');
-        } else if (d.type === 'apple') {
-            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${d.title}\nDTSTART:${startDate}\nDTEND:${endDate}\nLOCATION:${d.loc}\nEND:VEVENT\nEND:VCALENDAR`;
+        } else {
+            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${d.title}\nDTSTART:${start}\nDTEND:${end}\nLOCATION:${d.loc}\nEND:VEVENT\nEND:VCALENDAR`;
             const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', 'walk.ics');
+            link.setAttribute('download', 'walk-event.ics');
             link.click();
         }
     }
