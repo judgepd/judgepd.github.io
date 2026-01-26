@@ -48,16 +48,25 @@
 
         .walk-header-info { flex: 1.5; min-width: 300px; }
         .walk-stats-info { flex: 1; min-width: 250px; border-left: 1px solid #eee; padding-left: 20px; }
-        .walk-date { font-family: 'Lexend', sans-serif; font-size: 1.6rem; color: var(--primary-green); font-weight: 800; margin-bottom: 5px; }
+        .walk-date { font-family: 'Lexend', sans-serif; font-size: 1.6rem; color: var(--primary-green); font-weight: 800; margin-bottom: 5px; line-height: 1.2; }
         .walk-meta { font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        
         .label { font-weight: 700; color: var(--text-main); width: 110px; display: inline-block; }
-        .walk-info-box { background: var(--accent-light); padding: 15px; border-radius: 8px; width: 100%; border-left: 3px solid var(--primary-green); margin-top: 10px; }
+
+        .walk-info-box { background: var(--accent-light); padding: 15px; border-radius: 8px; width: 100%; border-left: 3px solid var(--primary-green); margin-top: 10px; font-size: 0.95rem; }
+
+        /* Calendar Buttons */
+        .walk-actions { width: 100%; border-top: 1px solid #eee; padding-top: 20px; margin-top: 10px; }
+        .cal-links { display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn-cal { padding: 10px 20px; font-size: 0.85rem; text-decoration: none; border-radius: 8px; font-weight: 700; transition: 0.2s; color: white; display: inline-block; }
+        .google-cal { background-color: #4285F4; }
+        .apple-cal { background-color: #111; }
+        .btn-cal:hover { opacity: 0.9; transform: translateY(-1px); }
 
         .status-message { text-align: center; padding: 60px; background: white; border-radius: 16px; font-weight: 700; color: #666; }
 
         .links-container { display: flex; gap: 20px; justify-content: center; margin-top: 40px; }
-        .btn { display: inline-block; background: var(--primary-green); color: var(--white); padding: 15px 40px; text-decoration: none; border-radius: 10px; font-weight: 800; transition: 0.2s; }
-        .btn-secondary { background: #e1e9df; color: var(--primary-green); }
+        .btn { display: inline-block; background: var(--primary-green); color: var(--white); padding: 15px 40px; text-decoration: none; border-radius: 10px; font-weight: 800; }
 
         @media (max-width: 800px) {
             .walk-card { flex-direction: column; align-items: flex-start; }
@@ -75,124 +84,114 @@
 
     <div class="container">
         <div id="walks-container">
-            <div class="status-message">Fetching the latest walks from the calendar...</div>
+            <div class="status-message">Fetching upcoming walks...</div>
         </div>
 
         <div class="links-container">
             <a href="index.html" class="btn">Back</a>
-            <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn btn-secondary" target="_blank">Add a new walk</a>
+            <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn" style="background:#e1e9df; color:#2d5a27;" target="_blank">Add a new walk</a>
         </div>
     </div>
 
     <script>
-        // Direct link to your Google Sheet as a CSV export
         const SHEET_ID = '1BEzHNrMLSIx871a4Kt70mHykAQ4YiOxCZpltKTIME6k';
         const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 
-        // Robust CSV Parser to handle Google Sheets formatting
         function parseCSV(csvText) {
             const rows = [];
             let currentRow = [];
             let currentField = '';
             let insideQuotes = false;
-
             for (let i = 0; i < csvText.length; i++) {
                 const char = csvText[i];
-                const nextChar = csvText[i + 1];
-
-                if (char === '"' && insideQuotes && nextChar === '"') {
-                    currentField += '"';
-                    i++;
-                } else if (char === '"') {
-                    insideQuotes = !insideQuotes;
-                } else if (char === ',' && !insideQuotes) {
-                    currentRow.push(currentField.trim());
-                    currentField = '';
-                } else if ((char === '\r' || char === '\n') && !insideQuotes) {
-                    if (currentField || currentRow.length > 0) {
-                        currentRow.push(currentField.trim());
-                        rows.push(currentRow);
-                        currentField = '';
-                        currentRow = [];
-                    }
-                } else {
-                    currentField += char;
-                }
+                if (char === '"' && insideQuotes && csvText[i + 1] === '"') { currentField += '"'; i++; }
+                else if (char === '"') { insideQuotes = !insideQuotes; }
+                else if (char === ',' && !insideQuotes) { currentRow.push(currentField.trim()); currentField = ''; }
+                else if ((char === '\r' || char === '\n') && !insideQuotes) {
+                    if (currentField || currentRow.length > 0) { currentRow.push(currentField.trim()); rows.push(currentRow); currentField = ''; currentRow = []; }
+                } else { currentField += char; }
             }
-            if (currentField || currentRow.length > 0) {
-                currentRow.push(currentField.trim());
-                rows.push(currentRow);
-            }
-
+            if (currentField || currentRow.length > 0) { currentRow.push(currentField.trim()); rows.push(currentRow); }
             const headers = rows[0];
             return rows.slice(1).map(row => {
                 let obj = {};
-                headers.forEach((header, i) => {
-                    obj[header] = row[i] || '';
-                });
+                headers.forEach((header, i) => obj[header] = row[i] || '');
                 return obj;
             });
         }
 
         function formatDisplayDate(dateStr) {
-            try {
-                // Expects DD/MM/YYYY
-                const [d, m, y] = dateStr.split('/');
-                const dateObj = new Date(y, m - 1, d);
-                return dateObj.toLocaleDateString('en-GB', {
-                    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-                });
-            } catch(e) { return dateStr; }
+            const [d, m, y] = dateStr.split('/');
+            return new Date(y, m - 1, d).toLocaleDateString('en-GB', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+        }
+
+        function formatDateForCal(dateStr, timeStr) {
+            const [d, m, y] = dateStr.split('/');
+            const cleanTime = (timeStr || "10:00").replace(':', '').substring(0,4).padEnd(4, '0');
+            return `${y}${m.padStart(2,'0')}${d.padStart(2,'0')}T${cleanTime}00`;
         }
 
         async function fetchWalks() {
             const container = document.getElementById('walks-container');
             try {
                 const response = await fetch(CSV_URL);
-                if (!response.ok) throw new Error('Could not fetch spreadsheet');
                 const csvText = await response.text();
                 const data = parseCSV(csvText);
 
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+                const today = new Date().setHours(0,0,0,0);
 
                 const upcoming = data.filter(w => {
                     if (!w['Date of walk']) return false;
                     const [d, m, y] = w['Date of walk'].split('/');
-                    const walkDate = new Date(y, m - 1, d);
-                    return walkDate >= today;
-                }).sort((a, b) => {
-                    const dateA = new Date(a['Date of walk'].split('/').reverse().join('-'));
-                    const dateB = new Date(b['Date of walk'].split('/').reverse().join('-'));
-                    return dateA - dateB;
-                });
+                    return new Date(y, m - 1, d) >= today;
+                }).sort((a, b) => new Date(a['Date of walk'].split('/').reverse().join('-')) - new Date(b['Date of walk'].split('/').reverse().join('-')));
 
                 if (upcoming.length === 0) {
-                    container.innerHTML = '<div class="status-message">No upcoming walks scheduled. Check back soon!</div>';
+                    container.innerHTML = '<div class="status-message">No upcoming walks scheduled.</div>';
                     return;
                 }
 
-                container.innerHTML = upcoming.map(w => `
-                    <div class="walk-card">
-                        <div class="walk-header-info">
-                            <div class="walk-date">${formatDisplayDate(w['Date of walk'])}</div>
-                            <div class="walk-meta">Leader: ${w['Forename']} ${w['Surname']}</div>
+                container.innerHTML = upcoming.map(w => {
+                    const originalDate = w['Date of walk'];
+                    const walkTime = w['Meeting time'] || "10:00";
+                    const walkLoc = w['Meeting location'] || 'TBC';
+                    const walkTitle = encodeURIComponent('Powick Ramblers Walk');
+                    const calDate = formatDateForCal(originalDate, walkTime);
+                    
+                    const googleUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${walkTitle}&dates=${calDate}/${calDate}&location=${encodeURIComponent(walkLoc)}`;
+                    
+                    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${calDate}\nSUMMARY:Powick Ramblers Walk\nLOCATION:${walkLoc}\nEND:VEVENT\nEND:VCALENDAR`;
+                    const icsBlob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+                    const icsUrl = URL.createObjectURL(icsBlob);
+
+                    return `
+                        <div class="walk-card">
+                            <div class="walk-header-info">
+                                <div class="walk-date">${formatDisplayDate(originalDate)}</div>
+                                <div class="walk-meta">Leader: ${w['Forename']} ${w['Surname']}</div>
+                            </div>
+                            <div class="walk-stats-info">
+                                <div class="walk-detail"><span class="label">Time:</span> ${walkTime}</div>
+                                <div class="walk-detail"><span class="label">Location:</span> ${walkLoc}</div>
+                                <div class="walk-detail"><span class="label">Distance:</span> ${w['Length of walk']}</div>
+                            </div>
+                            ${w['Useful information'] ? `<div class="walk-info-box"><strong>Note:</strong> ${w['Useful information']}</div>` : ''}
+                            <div class="walk-actions">
+                                <div class="cal-links">
+                                    <a href="${googleUrl}" target="_blank" class="btn-cal google-cal">Add to Google Calendar</a>
+                                    <a href="${icsUrl}" download="walk.ics" class="btn-cal apple-cal">Add to Apple/Outlook</a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="walk-stats-info">
-                            <div class="walk-detail"><span class="label">Time:</span> ${w['Meeting time']}</div>
-                            <div class="walk-detail"><span class="label">Location:</span> ${w['Meeting location']}</div>
-                            <div class="walk-detail"><span class="label">Distance:</span> ${w['Length of walk']}</div>
-                        </div>
-                        ${w['Useful information'] ? `<div class="walk-info-box"><strong>Note:</strong> ${w['Useful information']}</div>` : ''}
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
             } catch (error) {
-                console.error(error);
-                container.innerHTML = `<div class="status-message">Unable to connect to Google Sheets.<br><small>Make sure your sheet is shared as "Anyone with the link can view".</small></div>`;
+                container.innerHTML = `<div class="status-message">Unable to load walks. Please ensure the Google Sheet is shared as "Anyone with the link can view".</div>`;
             }
         }
-
         fetchWalks();
     </script>
 </body>
