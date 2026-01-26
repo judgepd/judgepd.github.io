@@ -1,3 +1,14 @@
+<script>
+    (function() {
+        const accessKey = localStorage.getItem('ramblers_access');
+        const now = new Date().getTime();
+
+        if (!accessKey || now > parseInt(accessKey)) {
+            // No valid session found, send them back to login
+            window.location.href = 'login.html';
+        }
+    })();
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
