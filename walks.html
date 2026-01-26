@@ -3,58 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Powick Ramblers | Walking Together</title>
+    <title>Powick Ramblers | Upcoming Walks</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lexend:wght@700;800&display=swap" rel="stylesheet">
 	
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.0/css/responsive.dataTables.min.css" />
-    <script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.min.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.4/luxon.min.js"></script>
-    <script src="https://cdn.datatables.net/plug-ins/2.1.8/sorting/datetime-luxon.js"></script>
 
     <style>
-
-        
-
-.cal-link {
-    display: inline-block;
-    width: 22px;
-    height: 22px;
-    line-height: 20px;
-    text-align: center;
-    border-radius: 50%;
-    cursor: pointer;
-    font-weight: bold;
-    color: white !important;
-    font-family: Arial, sans-serif;
-    margin: 0 4px;
-    font-size: 16px;
-}
-.g-cal { background-color: #4285F4; } /* Google Blue */
-.a-cal { background-color: #000000; } /* Apple Black */
-.cal-link:hover { opacity: 0.7; }
-
-
-.cal-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    text-decoration: none !important;
-    font-size: 11px;
-    font-weight: bold;
-    color: white !important;
-    margin-right: 5px;
-}
-.google { background-color: #4285F4; } /* Google Blue */
-.apple { background-color: #000000; }  /* Apple Black */
-.cal-btn:hover { opacity: 0.8; }
-
         :root {
             --bg-body: #f4f7f1;
             --header-bg: #0f1f0d;
@@ -62,27 +16,7 @@
             --text-main: #111111;
             --text-secondary: #444444;
             --white: #ffffff;
-        }
-		
-		table.dataTable {
-			width: 100% !important;
-            margin-top: 20px !important;
-		}
-
-        /* Custom DataTables Styling */
-        .dt-search input {
-            border: 2px solid #e1e9df !important;
-            border-radius: 8px !important;
-            padding: 8px !important;
-            outline: none;
-        }
-        .dt-search input:focus { border-color: var(--primary-green) !important; }
-        
-        .dt-paging-button.current {
-            background: var(--primary-green) !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 6px;
+            --accent-light: #e8f5e9;
         }
 
         body {
@@ -105,47 +39,84 @@
 
         h1 {
             font-family: 'Lexend', sans-serif;
-            margin: 0;
             font-size: 3.5rem;
             font-weight: 800;
-            letter-spacing: -1px;
+            margin: 0;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
         }
 
-        header p {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-top: 15px;
-            color: #e8f5e9;
-        }
-
         .container {
-            max-width: 90%;
+            max-width: 1100px;
             margin: -60px auto 40px;
             padding: 0 20px;
             position: relative;
             z-index: 10;
         }
 
-        .content {
-            background: var(--white);
-            padding: 50px;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        /* The Grid for our Cards */
+        .walks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
 
-        h2 {
+        /* Individual Walk Card */
+        .walk-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--primary-green);
+            transition: transform 0.2s ease;
+        }
+
+        .walk-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .walk-date {
             font-family: 'Lexend', sans-serif;
-            font-size: 2.2rem;
+            font-size: 1.3rem;
             color: var(--primary-green);
-            margin-top: 0;
+            font-weight: 800;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .walk-meta {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .walk-detail {
+            margin: 8px 0;
+            font-size: 1.1rem;
+        }
+
+        .label {
+            font-weight: 700;
+            color: var(--text-main);
+            display: inline-block;
+            width: 90px;
+        }
+
+        .walk-info-box {
+            background: var(--accent-light);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            font-style: italic;
         }
 
         .links-container {
             display: flex;
             gap: 20px;
             justify-content: center;
-            flex-wrap: wrap;
             margin-top: 40px;
         }
 
@@ -153,37 +124,18 @@
             display: inline-block;
             background: var(--primary-green);
             color: var(--white);
-            padding: 18px 36px;
+            padding: 15px 30px;
             text-decoration: none;
             border-radius: 10px;
             font-weight: 800;
-            font-size: 1.1rem;
-            transition: all 0.2s ease;
+            transition: 0.2s;
         }
 
-        .btn:hover {
-            background: #1e3d1a;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(45, 90, 39, 0.3);
-        }
-
-        .btn-secondary {
-            background: #f0f4ef;
-            color: var(--primary-green);
-        }
-
-        footer {
-            text-align: center;
-            padding: 50px 20px;
-            font-weight: 500;
-            color: #777;
-        }
+        .btn-secondary { background: #e1e9df; color: var(--primary-green); }
 
         @media (max-width: 600px) {
-            h1 { font-size: 2.6rem; }
-            header { padding: 80px 20px; }
-            .content { padding: 30px; }
-            .btn { width: 100%; text-align: center; }
+            h1 { font-size: 2.2rem; }
+            .walks-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -195,132 +147,35 @@
     </header>
 
     <div class="container">
-        <main class="content">
-            <h2>Viewing walks</h2>
-
-    <table id="myTable" class="display">
-  <thead>
-    <tr>
-      <th>Date of walk</th>
-	  <th>Added by</th>
-      <th>Mobile number</th>
-      <th>Meeting time</th>
-      <th>Meeting location</th>
-	  <th>Length of walk</th>
-      <th>Useful information</th>
-      <th>Add to calendar</th>
-	</tr>
-  </thead>
-  <tbody data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8"
-         data-sheetdb-sort-by="age"
-         data-sheetdb-sort-order="desc">
-    <tr>
-      <td>{{Date of walk}}</td>
-      <td>{{Forename}} {{Surname}}</td>
-      <td>{{Mobile phone number}}</td>
-      <td>{{Meeting time}}</td>
-      <td>{{Meeting location}}</td>
-	  <td>{{Length of walk}}</td>
-	  <td>{{Useful information}}</td>
-<td>
-  <span class="cal-link g-cal" 
-        data-type="google" 
-        data-title="Powick Ramblers" 
-        data-date="{{Date of walk}}" 
-        data-time="{{Meeting time}}" 
-        data-loc="{{Meeting location}}"
-        data-info="{{Useful information}}"
-        data-leader="{{Forename}} {{Surname}}">+</span>
-
-  <span class="cal-link a-cal" 
-        data-type="apple" 
-        data-title="Powick Ramblers" 
-        data-date="{{Date of walk}}" 
-        data-time="{{Meeting time}}" 
-        data-loc="{{Meeting location}}"
-        data-info="{{Useful information}}"
-        data-leader="{{Forename}} {{Surname}}">+</span>
-</td>
-    </tr>
-  </tbody>
-</table>
-
-<script src="https://sheetdb.io/handlebars.js"></script>
-
-            <div class="links-container">
-                <a href="/index.html" class="btn">Back</a>
-                <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn btn-secondary" target="_blank">Add a new walk</a>
+        <div id="walks-list" class="walks-grid" 
+             data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8"
+             data-sheetdb-sort-by="Date of walk"
+             data-sheetdb-sort-order="desc">
+            
+            <div class="walk-card">
+                <span class="walk-date">{{Date of walk}}</span>
+                <div class="walk-meta">Added by {{Forename}} {{Surname}}</div>
+                
+                <div class="walk-detail"><span class="label">Time:</span> {{Meeting time}}</div>
+                <div class="walk-detail"><span class="label">Location:</span> {{Meeting location}}</div>
+                <div class="walk-detail"><span class="label">Distance:</span> {{Length of walk}}</div>
+                
+                {{#if [Useful information]}}
+                <div class="walk-info-box">
+                    <strong>Note:</strong> {{Useful information}}
+                </div>
+                {{/if}}
             </div>
-        </main>
+
+        </div>
+
+        <div class="links-container">
+            <a href="https://judgepd.github.io/index.html" class="btn">Back</a>
+            <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn btn-secondary" target="_blank">Add a new walk</a>
+        </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Powick Ramblers. All walkers welcome.</p>
-    </footer>
-	
-<script>
-  // Initialize Date sorting for DD/MM/YYYY format
-  $.fn.dataTable.render.datetime('DD/MM/YYYY');
-
-  window.addEventListener('sheetdb-downloaded', function() {
-    $('#myTable').DataTable({
-        "pageLength": 25,
-        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        "order": [[ 0, "desc" ]], // Sorts by date descending
-        "responsive": true,
-        "columnDefs": [
-            { "type": "datetime-luxon", "targets": 0 }, // Precise date sorting
-            { "responsivePriority": 1, "targets": 0 }, 
-            { "responsivePriority": 2, "targets": 3 }, 
-            { "responsivePriority": 3, "targets": 2 }, 
-            { "responsivePriority": 4, "targets": 1 }, 
-            { "responsivePriority": 5, "targets": 4 }, 
-            { "responsivePriority": 6, "targets": 5 }  
-        ],
-        "destroy": true // Allows re-initialization after SheetDB injects rows
-    });
-  });
-</script>
-
-<script>
-document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('cal-link')) {
-        const d = e.target.dataset;
-        
-        // Date parsing logic
-        let parts = d.date.split(/[-/]/);
-        let dateObj;
-        if (parts[0].length === 4) { 
-            dateObj = new Date(`${d.date} ${d.time}`);
-        } else { 
-            dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]} ${d.time}`);
-        }
-
-        if (isNaN(dateObj)) return;
-
-        const formatCal = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
-        const start = formatCal(dateObj);
-        const end = formatCal(new Date(dateObj.getTime() + 7200000)); 
-
-        // Combine Leader and Useful Info for the description
-        const description = `Walk Leader: ${d.leader}\n\nNotes: ${d.info}`;
-
-        if (d.type === 'google') {
-            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(d.title)}&dates=${start}/${end}&location=${encodeURIComponent(d.loc)}&details=${encodeURIComponent(description)}`;
-            window.open(url, '_blank');
-        } else {
-            // Apple .ics format (using \n for line breaks)
-            const icsDescription = description.replace(/\n/g, '\\n');
-            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${d.title}\nDTSTART:${start}\nDTEND:${end}\nLOCATION:${d.loc}\nDESCRIPTION:${icsDescription}\nEND:VEVENT\nEND:VCALENDAR`;
-            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', 'walk-event.ics');
-            link.click();
-        }
-    }
-});
-</script>
+    <script src="https://sheetdb.io/handlebars.js"></script>
 
 </body>
 </html>
