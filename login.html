@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Powick Ramblers | Member Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #2d5a27; --bg: #f4f7f1; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .login-box { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; }
+        h1 { font-family: 'Lexend', sans-serif; color: var(--primary); margin: 0 0 10px 0; }
+        input { width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--primary); }
+        button { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; transition: 0.2s; }
+        button:hover { background: #1e3d1a; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #msg { color: #d32f2f; margin-top: 15px; font-weight: bold; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>Member Login</h1>
+        <p>Enter your email to view the walks.</p>
+        <input type="email" id="emailInput" placeholder="yourname@email.com" onkeypress="if(event.key === 'Enter') checkAccess()">
+        <button id="loginBtn" onclick="checkAccess()">Enter Site</button>
+        <p id="msg"></p>
+    </div>
+
+    <script>
+        const SHEET_ID = '1BEzHNrMLSIx871a4Kt70mHykAQ4YiOxCZpltKTIME6k';
+        const GID = '533246248'; 
+        const EMAIL_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+
+        async function checkAccess() {
+            const inputEmail = document.getElementById('emailInput').value.toLowerCase().trim();
+            const msg = document.getElementById('msg');
+            const btn = document.getElementById('loginBtn');
+
+            if (!inputEmail) { msg.innerText = "Please enter your email."; return; }
+
+            msg.innerText = "Verifying member status...";
+            btn.disabled = true;
+
+            try {
+                // Fetch the Emails tab directly
+                const response = await fetch(EMAIL_CSV_URL);
+                const csvText = await response.text();
+                
+                // Convert CSV to a clean list of emails
+                const approvedEmails = csvText.split(/\r?\n/)
+                    .map(row => row.split(',')[0].replace(/"/g, '').trim().toLowerCase());
+
+                if (approvedEmails.includes(inputEmail)) {
+                    // Success: Access valid for 7 days
+                    const expiry = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
+                    localStorage.setItem('ramblers_access', expiry);
+                    
+                    // Redirect to the walks page
+                    window.location.href = 'walks.html'; 
+                } else {
+                    msg.innerText = "Sorry, that email isn't on our approved list.";
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                msg.innerText = "Connection error. Please try again.";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
