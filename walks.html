@@ -30,21 +30,9 @@
 
         h1 { font-family: 'Lexend', sans-serif; font-size: 3.5rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 0px rgba(0,0,0,0.5); }
 
-        .container { 
-            max-width: 1200px;
-            margin: -60px auto 40px; 
-            padding: 0 20px; 
-            position: relative; 
-            z-index: 10; 
-        }
+        .container { max-width: 1200px; margin: -60px auto 40px; padding: 0 20px; position: relative; z-index: 10; }
 
-        #walks-container { 
-            display: flex;
-            flex-direction: column;
-            gap: 20px; 
-            margin-bottom: 40px; 
-            min-height: 200px;
-        }
+        #walks-container { display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
 
         .walk-card {
             background: var(--white);
@@ -60,23 +48,12 @@
 
         .walk-header-info { flex: 1.5; min-width: 300px; }
         .walk-stats-info { flex: 1; min-width: 250px; border-left: 1px solid #eee; padding-left: 20px; }
-        .walk-actions { width: 100%; border-top: 1px solid #eee; padding-top: 15px; margin-top: 10px; }
-
-        .walk-date { font-family: 'Lexend', sans-serif; font-size: 1.6rem; color: var(--primary-green); font-weight: 800; margin-bottom: 5px; line-height: 1.2; }
+        .walk-date { font-family: 'Lexend', sans-serif; font-size: 1.6rem; color: var(--primary-green); font-weight: 800; margin-bottom: 5px; }
         .walk-meta { font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        
-        .walk-detail { margin: 8px 0; font-size: 1.1rem; }
         .label { font-weight: 700; color: var(--text-main); width: 110px; display: inline-block; }
+        .walk-info-box { background: var(--accent-light); padding: 15px; border-radius: 8px; width: 100%; border-left: 3px solid var(--primary-green); margin-top: 10px; }
 
-        .walk-info-box { background: var(--accent-light); padding: 15px; border-radius: 8px; font-size: 1rem; border-left: 3px solid var(--primary-green); margin-top: 10px; width: 100%; }
-
-        .cal-links { display: flex; gap: 15px; flex-wrap: wrap; }
-        .btn-cal { padding: 10px 20px; font-size: 0.9rem; text-decoration: none; border-radius: 8px; font-weight: 700; transition: 0.2s; color: white; }
-        .google-cal { background-color: #4285F4; }
-        .apple-cal { background-color: #111; }
-        .btn-cal:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        .status-message { text-align: center; font-size: 1.2rem; padding: 60px; color: var(--text-secondary); width: 100%; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .status-message { text-align: center; padding: 60px; background: white; border-radius: 16px; font-weight: 700; color: #666; }
 
         .links-container { display: flex; gap: 20px; justify-content: center; margin-top: 40px; }
         .btn { display: inline-block; background: var(--primary-green); color: var(--white); padding: 15px 40px; text-decoration: none; border-radius: 10px; font-weight: 800; transition: 0.2s; }
@@ -85,6 +62,7 @@
         @media (max-width: 800px) {
             .walk-card { flex-direction: column; align-items: flex-start; }
             .walk-stats-info { border-left: none; padding-left: 0; border-top: 1px solid #eee; padding-top: 15px; width: 100%; }
+            h1 { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -97,27 +75,125 @@
 
     <div class="container">
         <div id="walks-container">
-            <div class="status-message">Loading the latest walks...</div>
+            <div class="status-message">Fetching the latest walks from the calendar...</div>
         </div>
 
         <div class="links-container">
-            <a href="https://judgepd.github.io/index.html" class="btn">Back</a>
+            <a href="index.html" class="btn">Back</a>
             <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn btn-secondary" target="_blank">Add a new walk</a>
         </div>
     </div>
 
     <script>
-        const API_URL = 'https://sheetdb.io/api/v1/eag1jns4ulxm8';
+        // Direct link to your Google Sheet as a CSV export
+        const SHEET_ID = '1BEzHNrMLSIx871a4Kt70mHykAQ4YiOxCZpltKTIME6k';
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 
-        function formatDateForCal(dateStr, timeStr) {
-            try {
-                const [d, m, y] = dateStr.split('/');
-                const cleanTime = (timeStr || "10:00").replace(':', '').padEnd(4, '0');
-                return `${y}${m}${d}T${cleanTime}00`;
-            } catch(e) { return ""; }
+        // Robust CSV Parser to handle Google Sheets formatting
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let insideQuotes = false;
+
+            for (let i = 0; i < csvText.length; i++) {
+                const char = csvText[i];
+                const nextChar = csvText[i + 1];
+
+                if (char === '"' && insideQuotes && nextChar === '"') {
+                    currentField += '"';
+                    i++;
+                } else if (char === '"') {
+                    insideQuotes = !insideQuotes;
+                } else if (char === ',' && !insideQuotes) {
+                    currentRow.push(currentField.trim());
+                    currentField = '';
+                } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+                    if (currentField || currentRow.length > 0) {
+                        currentRow.push(currentField.trim());
+                        rows.push(currentRow);
+                        currentField = '';
+                        currentRow = [];
+                    }
+                } else {
+                    currentField += char;
+                }
+            }
+            if (currentField || currentRow.length > 0) {
+                currentRow.push(currentField.trim());
+                rows.push(currentRow);
+            }
+
+            const headers = rows[0];
+            return rows.slice(1).map(row => {
+                let obj = {};
+                headers.forEach((header, i) => {
+                    obj[header] = row[i] || '';
+                });
+                return obj;
+            });
         }
 
-        // NEW: Formats the date for the display card
         function formatDisplayDate(dateStr) {
             try {
-                const [d, m, y] = dateStr.
+                // Expects DD/MM/YYYY
+                const [d, m, y] = dateStr.split('/');
+                const dateObj = new Date(y, m - 1, d);
+                return dateObj.toLocaleDateString('en-GB', {
+                    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+                });
+            } catch(e) { return dateStr; }
+        }
+
+        async function fetchWalks() {
+            const container = document.getElementById('walks-container');
+            try {
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error('Could not fetch spreadsheet');
+                const csvText = await response.text();
+                const data = parseCSV(csvText);
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const upcoming = data.filter(w => {
+                    if (!w['Date of walk']) return false;
+                    const [d, m, y] = w['Date of walk'].split('/');
+                    const walkDate = new Date(y, m - 1, d);
+                    return walkDate >= today;
+                }).sort((a, b) => {
+                    const dateA = new Date(a['Date of walk'].split('/').reverse().join('-'));
+                    const dateB = new Date(b['Date of walk'].split('/').reverse().join('-'));
+                    return dateA - dateB;
+                });
+
+                if (upcoming.length === 0) {
+                    container.innerHTML = '<div class="status-message">No upcoming walks scheduled. Check back soon!</div>';
+                    return;
+                }
+
+                container.innerHTML = upcoming.map(w => `
+                    <div class="walk-card">
+                        <div class="walk-header-info">
+                            <div class="walk-date">${formatDisplayDate(w['Date of walk'])}</div>
+                            <div class="walk-meta">Leader: ${w['Forename']} ${w['Surname']}</div>
+                        </div>
+                        <div class="walk-stats-info">
+                            <div class="walk-detail"><span class="label">Time:</span> ${w['Meeting time']}</div>
+                            <div class="walk-detail"><span class="label">Location:</span> ${w['Meeting location']}</div>
+                            <div class="walk-detail"><span class="label">Distance:</span> ${w['Length of walk']}</div>
+                        </div>
+                        ${w['Useful information'] ? `<div class="walk-info-box"><strong>Note:</strong> ${w['Useful information']}</div>` : ''}
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<div class="status-message">Unable to connect to Google Sheets.<br><small>Make sure your sheet is shared as "Anyone with the link can view".</small></div>`;
+            }
+        }
+
+        fetchWalks();
+    </script>
+</body>
+</html>
