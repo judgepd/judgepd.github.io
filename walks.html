@@ -17,14 +17,7 @@
             --accent-light: #e8f5e9;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-body);
-        }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text-main); margin: 0; padding: 0; background-color: var(--bg-body); }
 
         header {
             text-align: center;
@@ -35,31 +28,12 @@
             margin-bottom: 30px;
         }
 
-        h1 {
-            font-family: 'Lexend', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin: 0;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
-        }
+        h1 { font-family: 'Lexend', sans-serif; font-size: 3.5rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 0px rgba(0,0,0,0.5); }
 
-        .container {
-            max-width: 1100px;
-            margin: -60px auto 40px;
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
-        }
+        .container { max-width: 1100px; margin: -60px auto 40px; padding: 0 20px; position: relative; z-index: 10; }
 
-        /* Grid for Cards */
-        #walks-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
+        #walks-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-bottom: 40px; }
 
-        /* Card Styling */
         .walk-card {
             background: var(--white);
             border-radius: 16px;
@@ -70,77 +44,42 @@
             flex-direction: column;
         }
 
-        .walk-date {
-            font-family: 'Lexend', sans-serif;
-            font-size: 1.4rem;
-            color: var(--primary-green);
-            font-weight: 800;
-            margin-bottom: 5px;
-        }
+        .walk-date { font-family: 'Lexend', sans-serif; font-size: 1.4rem; color: var(--primary-green); font-weight: 800; margin-bottom: 5px; }
 
-        .walk-meta {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
+        .walk-meta { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
-        .walk-detail {
-            margin: 6px 0;
-            font-size: 1.05rem;
-        }
+        .walk-detail { margin: 6px 0; font-size: 1.05rem; }
+        .label { font-weight: 700; color: var(--text-main); width: 100px; display: inline-block; }
 
-        .label {
-            font-weight: 700;
-            color: var(--text-main);
-            width: 100px;
-            display: inline-block;
-        }
+        .walk-info-box { background: var(--accent-light); padding: 15px; border-radius: 8px; font-size: 0.95rem; margin-top: 15px; border-left: 3px solid var(--primary-green); }
 
-        .walk-info-box {
-            background: var(--accent-light);
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            margin-top: auto; /* Pushes box to bottom of card */
-            border-left: 3px solid var(--primary-green);
-        }
-
-        .loading-text {
-            grid-column: 1 / -1;
+        /* Calendar Button Styles */
+        .cal-links { display: flex; gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd; }
+        
+        .btn-cal {
+            flex: 1;
+            font-size: 0.8rem;
+            padding: 8px;
             text-align: center;
-            font-size: 1.2rem;
-            padding: 50px;
-            color: var(--text-secondary);
-        }
-
-        .links-container {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        .btn {
-            display: inline-block;
-            background: var(--primary-green);
-            color: var(--white);
-            padding: 15px 30px;
             text-decoration: none;
-            border-radius: 10px;
-            font-weight: 800;
-            transition: 0.2s;
+            border-radius: 6px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
+        .google-cal { background-color: #f1f1f1; color: #4285F4; border: 1px solid #4285F4; }
+        .apple-cal { background-color: #f1f1f1; color: #000; border: 1px solid #000; }
+        .btn-cal:hover { opacity: 0.8; }
 
+        .loading-text { grid-column: 1 / -1; text-align: center; font-size: 1.2rem; padding: 50px; color: var(--text-secondary); }
+
+        .links-container { display: flex; gap: 20px; justify-content: center; margin-top: 40px; }
+        .btn { display: inline-block; background: var(--primary-green); color: var(--white); padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: 800; transition: 0.2s; }
         .btn-secondary { background: #e1e9df; color: var(--primary-green); }
 
-        @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; }
-            header p { font-size: 1.1rem; }
-        }
+        @media (max-width: 600px) { h1 { font-size: 2.2rem; } }
     </style>
 </head>
 <body>
@@ -164,12 +103,18 @@
     <script>
         const API_URL = 'https://sheetdb.io/api/v1/eag1jns4ulxm8';
 
+        function formatDateForCal(dateStr, timeStr) {
+            // Converts DD/MM/YYYY and HH:MM to YYYYMMDDTHHMMSSZ
+            const [d, m, y] = dateStr.split('/');
+            const cleanTime = timeStr.replace(':', '').padEnd(4, '0');
+            return `${y}${m}${d}T${cleanTime}00`;
+        }
+
         async function fetchWalks() {
             try {
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 
-                // Sort data by date descending (assuming DD/MM/YYYY)
                 data.sort((a, b) => {
                     const dateA = new Date(a['Date of walk'].split('/').reverse().join('-'));
                     const dateB = new Date(b['Date of walk'].split('/').reverse().join('-'));
@@ -178,37 +123,56 @@
 
                 displayWalks(data);
             } catch (error) {
-                console.error('Error fetching data:', error);
-                document.getElementById('walks-container').innerHTML = '<div class="loading-text">Unable to load walks at this time. Please try again later.</div>';
+                document.getElementById('walks-container').innerHTML = '<div class="loading-text">Unable to load walks.</div>';
             }
         }
 
         function displayWalks(walks) {
             const container = document.getElementById('walks-container');
-            container.innerHTML = ''; // Clear loading text
+            container.innerHTML = '';
 
             walks.forEach(walk => {
+                const walkTitle = `Powick Ramblers Walk`;
+                const walkLoc = walk['Meeting location'];
+                const walkDate = walk['Date of walk'];
+                const walkTime = walk['Meeting time'] || "10:00";
+                const walkDesc = `Leader: ${walk['Forename']} ${walk['Surname']}. ${walk['Useful information'] || ''}`;
+                
+                const calStart = formatDateForCal(walkDate, walkTime);
+                
+                // Google Link
+                const googleUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(walkTitle)}&dates=${calStart}/${calStart}&details=${encodeURIComponent(walkDesc)}&location=${encodeURIComponent(walkLoc)}`;
+
+                // Apple/iCal Data
+                const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nURL:https://powickramblers.org\nDTSTART:${calStart}\nSUMMARY:${walkTitle}\nDESCRIPTION:${walkDesc}\nLOCATION:${walkLoc}\nEND:VEVENT\nEND:VCALENDAR`;
+                const icsBlob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+                const icsUrl = URL.createObjectURL(icsBlob);
+
                 const infoBox = walk['Useful information'] 
                     ? `<div class="walk-info-box"><strong>Note:</strong> ${walk['Useful information']}</div>` 
                     : '';
 
                 const cardHTML = `
                     <div class="walk-card">
-                        <div class="walk-date">${walk['Date of walk']}</div>
+                        <div class="walk-date">${walkDate}</div>
                         <div class="walk-meta">Leader: ${walk['Forename']} ${walk['Surname']}</div>
                         
-                        <div class="walk-detail"><span class="label">Time:</span> ${walk['Meeting time']}</div>
-                        <div class="walk-detail"><span class="label">Location:</span> ${walk['Meeting location']}</div>
+                        <div class="walk-detail"><span class="label">Time:</span> ${walkTime}</div>
+                        <div class="walk-detail"><span class="label">Location:</span> ${walkLoc}</div>
                         <div class="walk-detail"><span class="label">Distance:</span> ${walk['Length of walk']}</div>
                         
                         ${infoBox}
+
+                        <div class="cal-links">
+                            <a href="${googleUrl}" target="_blank" class="btn-cal google-cal">Add to Google</a>
+                            <a href="${icsUrl}" download="walk.ics" class="btn-cal apple-cal">Add to Apple/Outlook</a>
+                        </div>
                     </div>
                 `;
                 container.innerHTML += cardHTML;
             });
         }
 
-        // Run the function when page loads
         fetchWalks();
     </script>
 
