@@ -45,33 +45,16 @@
         }
 
         .walk-date { font-family: 'Lexend', sans-serif; font-size: 1.4rem; color: var(--primary-green); font-weight: 800; margin-bottom: 5px; }
-
         .walk-meta { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-
         .walk-detail { margin: 6px 0; font-size: 1.05rem; }
         .label { font-weight: 700; color: var(--text-main); width: 100px; display: inline-block; }
 
         .walk-info-box { background: var(--accent-light); padding: 15px; border-radius: 8px; font-size: 0.95rem; margin-top: 15px; border-left: 3px solid var(--primary-green); }
 
-        /* Calendar Button Styles */
         .cal-links { display: flex; gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd; }
-        
-        .btn-cal {
-            flex: 1;
-            font-size: 0.8rem;
-            padding: 8px;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
+        .btn-cal { flex: 1; font-size: 0.8rem; padding: 8px; text-align: center; text-decoration: none; border-radius: 6px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .google-cal { background-color: #f1f1f1; color: #4285F4; border: 1px solid #4285F4; }
         .apple-cal { background-color: #f1f1f1; color: #000; border: 1px solid #000; }
-        .btn-cal:hover { opacity: 0.8; }
 
         .loading-text { grid-column: 1 / -1; text-align: center; font-size: 1.2rem; padding: 50px; color: var(--text-secondary); }
 
@@ -91,7 +74,7 @@
 
     <div class="container">
         <div id="walks-container">
-            <div class="loading-text">Loading the latest walks...</div>
+            <div class="loading-text">Checking for upcoming walks...</div>
         </div>
 
         <div class="links-container">
@@ -104,9 +87,8 @@
         const API_URL = 'https://sheetdb.io/api/v1/eag1jns4ulxm8';
 
         function formatDateForCal(dateStr, timeStr) {
-            // Converts DD/MM/YYYY and HH:MM to YYYYMMDDTHHMMSSZ
             const [d, m, y] = dateStr.split('/');
-            const cleanTime = timeStr.replace(':', '').padEnd(4, '0');
+            const cleanTime = (timeStr || "10:00").replace(':', '').padEnd(4, '0');
             return `${y}${m}${d}T${cleanTime}00`;
         }
 
@@ -115,13 +97,25 @@
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 
-                data.sort((a, b) => {
-                    const dateA = new Date(a['Date of walk'].split('/').reverse().join('-'));
-                    const dateB = new Date(b['Date of walk'].split('/').reverse().join('-'));
-                    return dateB - dateA;
-                });
+                // Get today's date at midnight for fair comparison
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
 
-                displayWalks(data);
+                // 1. Filter out past walks
+                // 2. Sort remaining walks by date ascending (soonest first)
+                const upcomingWalks = data
+                    .filter(walk => {
+                        const [d, m, y] = walk['Date of walk'].split('/');
+                        const walkDate = new Date(y, m - 1, d);
+                        return walkDate >= today;
+                    })
+                    .sort((a, b) => {
+                        const dateA = new Date(a['Date of walk'].split('/').reverse().join('-'));
+                        const dateB = new Date(b['Date of walk'].split('/').reverse().join('-'));
+                        return dateA - dateB; // Soonest walk at the top
+                    });
+
+                displayWalks(upcomingWalks);
             } catch (error) {
                 document.getElementById('walks-container').innerHTML = '<div class="loading-text">Unable to load walks.</div>';
             }
@@ -129,6 +123,12 @@
 
         function displayWalks(walks) {
             const container = document.getElementById('walks-container');
+            
+            if (walks.length === 0) {
+                container.innerHTML = '<div class="loading-text">No upcoming walks scheduled at the moment. Check back soon!</div>';
+                return;
+            }
+
             container.innerHTML = '';
 
             walks.forEach(walk => {
@@ -139,12 +139,9 @@
                 const walkDesc = `Leader: ${walk['Forename']} ${walk['Surname']}. ${walk['Useful information'] || ''}`;
                 
                 const calStart = formatDateForCal(walkDate, walkTime);
-                
-                // Google Link
                 const googleUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(walkTitle)}&dates=${calStart}/${calStart}&details=${encodeURIComponent(walkDesc)}&location=${encodeURIComponent(walkLoc)}`;
 
-                // Apple/iCal Data
-                const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nURL:https://powickramblers.org\nDTSTART:${calStart}\nSUMMARY:${walkTitle}\nDESCRIPTION:${walkDesc}\nLOCATION:${walkLoc}\nEND:VEVENT\nEND:VCALENDAR`;
+                const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${calStart}\nSUMMARY:${walkTitle}\nDESCRIPTION:${walkDesc}\nLOCATION:${walkLoc}\nEND:VEVENT\nEND:VCALENDAR`;
                 const icsBlob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
                 const icsUrl = URL.createObjectURL(icsBlob);
 
@@ -152,24 +149,20 @@
                     ? `<div class="walk-info-box"><strong>Note:</strong> ${walk['Useful information']}</div>` 
                     : '';
 
-                const cardHTML = `
+                container.innerHTML += `
                     <div class="walk-card">
                         <div class="walk-date">${walkDate}</div>
                         <div class="walk-meta">Leader: ${walk['Forename']} ${walk['Surname']}</div>
-                        
                         <div class="walk-detail"><span class="label">Time:</span> ${walkTime}</div>
                         <div class="walk-detail"><span class="label">Location:</span> ${walkLoc}</div>
                         <div class="walk-detail"><span class="label">Distance:</span> ${walk['Length of walk']}</div>
-                        
                         ${infoBox}
-
                         <div class="cal-links">
                             <a href="${googleUrl}" target="_blank" class="btn-cal google-cal">Add to Google</a>
                             <a href="${icsUrl}" download="walk.ics" class="btn-cal apple-cal">Add to Apple/Outlook</a>
                         </div>
                     </div>
                 `;
-                container.innerHTML += cardHTML;
             });
         }
 
