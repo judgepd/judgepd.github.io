@@ -58,11 +58,11 @@
             align-items: center;
         }
 
-        .walk-header-info { flex: 1; min-width: 250px; }
+        .walk-header-info { flex: 1.5; min-width: 300px; }
         .walk-stats-info { flex: 1; min-width: 250px; border-left: 1px solid #eee; padding-left: 20px; }
         .walk-actions { width: 100%; border-top: 1px solid #eee; padding-top: 15px; margin-top: 10px; }
 
-        .walk-date { font-family: 'Lexend', sans-serif; font-size: 1.6rem; color: var(--primary-green); font-weight: 800; margin-bottom: 5px; }
+        .walk-date { font-family: 'Lexend', sans-serif; font-size: 1.6rem; color: var(--primary-green); font-weight: 800; margin-bottom: 5px; line-height: 1.2; }
         .walk-meta { font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         
         .walk-detail { margin: 8px 0; font-size: 1.1rem; }
@@ -97,7 +97,7 @@
 
     <div class="container">
         <div id="walks-container">
-            <div class="status-message">Connecting to the walk database...</div>
+            <div class="status-message">Loading the latest walks...</div>
         </div>
 
         <div class="links-container">
@@ -107,7 +107,6 @@
     </div>
 
     <script>
-        // Make sure this ID is exactly correct from your SheetDB dashboard
         const API_URL = 'https://sheetdb.io/api/v1/eag1jns4ulxm8';
 
         function formatDateForCal(dateStr, timeStr) {
@@ -118,96 +117,7 @@
             } catch(e) { return ""; }
         }
 
-        async function fetchWalks() {
-            const container = document.getElementById('walks-container');
+        // NEW: Formats the date for the display card
+        function formatDisplayDate(dateStr) {
             try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('API Response was not OK');
-                
-                const data = await response.json();
-                console.log("Data Received:", data); // Check your browser console to see the data
-
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                const upcomingWalks = data
-                    .filter(walk => {
-                        try {
-                            const [d, m, y] = walk['Date of walk'].split('/');
-                            const walkDate = new Date(y, m - 1, d);
-                            return walkDate >= today;
-                        } catch(e) { return false; }
-                    })
-                    .sort((a, b) => {
-                        const dateA = new Date(a['Date of walk'].split('/').reverse().join('-'));
-                        const dateB = new Date(b['Date of walk'].split('/').reverse().join('-'));
-                        return dateA - dateB;
-                    });
-
-                if (upcomingWalks.length === 0) {
-                    container.innerHTML = '<div class="status-message">No upcoming walks found. Why not add one?</div>';
-                } else {
-                    displayWalks(upcomingWalks);
-                }
-            } catch (error) {
-                console.error('Detailed Error:', error);
-                container.innerHTML = `<div class="status-message">Unable to load walks. Please refresh the page or check back later.</div>`;
-            }
-        }
-
-        function displayWalks(walks) {
-            const container = document.getElementById('walks-container');
-            container.innerHTML = '';
-
-            walks.forEach(walk => {
-                const walkTitle = `Powick Ramblers Walk`;
-                const walkLoc = walk['Meeting location'] || 'TBC';
-                const walkDate = walk['Date of walk'] || 'TBC';
-                const walkTime = walk['Meeting time'] || "10:00";
-                const walkForename = walk['Forename'] || '';
-                const walkSurname = walk['Surname'] || '';
-                const walkDistance = walk['Length of walk'] || 'TBC';
-                const usefulInfo = walk['Useful information'] || '';
-                
-                const calStart = formatDateForCal(walkDate, walkTime);
-                const googleUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(walkTitle)}&dates=${calStart}/${calStart}&details=${encodeURIComponent('Leader: ' + walkForename + ' ' + walkSurname)}&location=${encodeURIComponent(walkLoc)}`;
-
-                const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${calStart}\nSUMMARY:${walkTitle}\nLOCATION:${walkLoc}\nEND:VEVENT\nEND:VCALENDAR`;
-                const icsBlob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
-                const icsUrl = URL.createObjectURL(icsBlob);
-
-                const infoBox = usefulInfo 
-                    ? `<div class="walk-info-box"><strong>Additional Information:</strong> ${usefulInfo}</div>` 
-                    : '';
-
-                container.innerHTML += `
-                    <div class="walk-card">
-                        <div class="walk-header-info">
-                            <div class="walk-date">${walkDate}</div>
-                            <div class="walk-meta">Leader: ${walkForename} ${walkSurname}</div>
-                        </div>
-                        
-                        <div class="walk-stats-info">
-                            <div class="walk-detail"><span class="label">Time:</span> ${walkTime}</div>
-                            <div class="walk-detail"><span class="label">Location:</span> ${walkLoc}</div>
-                            <div class="walk-detail"><span class="label">Distance:</span> ${walkDistance}</div>
-                        </div>
-
-                        ${infoBox}
-
-                        <div class="walk-actions">
-                            <div class="cal-links">
-                                <a href="${googleUrl}" target="_blank" class="btn-cal google-cal">Add to Google Calendar</a>
-                                <a href="${icsUrl}" download="walk.ics" class="btn-cal apple-cal">Add to Apple/Outlook</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        fetchWalks();
-    </script>
-
-</body>
-</html>
+                const [d, m, y] = dateStr.
