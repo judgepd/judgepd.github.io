@@ -6,20 +6,19 @@
     <title>Powick Ramblers | Walking Together</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lexend:wght@700;800&display=swap" rel="stylesheet">
 	
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  
-	<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
-  
-  <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
-  
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.0/css/responsive.dataTables.min.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.0/css/responsive.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.4/luxon.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/2.1.8/sorting/datetime-luxon.js"></script>
 
-<script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.min.js"></script>
-	
     <style>
         :root {
             --bg-body: #f4f7f1;
-            --header-bg: #0f1f0d; /* Very deep green for maximum contrast */
+            --header-bg: #0f1f0d;
             --primary-green: #2d5a27;
             --text-main: #111111;
             --text-secondary: #444444;
@@ -28,7 +27,24 @@
 		
 		table.dataTable {
 			width: 100% !important;
+            margin-top: 20px !important;
 		}
+
+        /* Custom DataTables Styling */
+        .dt-search input {
+            border: 2px solid #e1e9df !important;
+            border-radius: 8px !important;
+            padding: 8px !important;
+            outline: none;
+        }
+        .dt-search input:focus { border-color: var(--primary-green) !important; }
+        
+        .dt-paging-button.current {
+            background: var(--primary-green) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 6px;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -39,12 +55,9 @@
             background-color: var(--bg-body);
         }
 
-        /* HIGH-CONTRAST HEADER */
         header {
             text-align: center;
             padding: 60px 20px;
-            /* Solid deep background for absolute text clarity */
-            background-color: var(--header-bg);
             background: linear-gradient(180deg, #0a1409 0%, #152b12 100%);
             color: var(--white);
             clip-path: ellipse(150% 100% at 50% 0%);
@@ -57,7 +70,6 @@
             font-size: 3.5rem;
             font-weight: 800;
             letter-spacing: -1px;
-            /* Extra shadow to ensure letters are sharp */
             text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
         }
 
@@ -65,10 +77,9 @@
             font-size: 1.4rem;
             font-weight: 700;
             margin-top: 15px;
-            color: #e8f5e9; /* Light mint tint for secondary text */
+            color: #e8f5e9;
         }
 
-        /* Main Content Card */
         .container {
             max-width: 90%;
             margin: -60px auto 40px;
@@ -91,18 +102,12 @@
             margin-top: 0;
         }
 
-        .content p {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-        }
-
-        /* Navigation Buttons */
         .links-container {
             display: flex;
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 40px;
         }
 
         .btn {
@@ -128,10 +133,6 @@
             color: var(--primary-green);
         }
 
-        .btn-secondary:hover {
-            background: #e1e9df;
-        }
-
         footer {
             text-align: center;
             padding: 50px 20px;
@@ -139,7 +140,6 @@
             color: #777;
         }
 
-        /* Mobile Adjustments */
         @media (max-width: 600px) {
             h1 { font-size: 2.6rem; }
             header { padding: 80px 20px; }
@@ -147,7 +147,6 @@
             .btn { width: 100%; text-align: center; }
         }
     </style>
-
 </head>
 <body>
 
@@ -158,34 +157,27 @@
 
     <div class="container">
         <main class="content">
-            <h2>Viewing walks</h2>
+            <h2>Upcoming Walks</h2>
 
-    <table id="myTable" class="display">
-  <thead>
-    <tr>
-      <th>Date of walk</th>
-	  <th>Added by</th>
-      <th>Meeting time</th>
-      <th>Meeting location</th>
-	  <th>Length of walk</th>
-      <th>Useful information</th>
-	</tr>
-  </thead>
-  <tbody data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8"
-         data-sheetdb-sort-by="age"
-         data-sheetdb-sort-order="desc">
-    <tr>
-      <td>{{Date of walk}}</td>
-      <td>{{Forename}} {{Surname}}</td>
-      <td>{{Meeting time}}</td>
-      <td>{{Meeting location}}</td>
-	  <td>{{Length of walk}}</td>
-	  <td>{{Useful information}}</td>
-    </tr>
-  </tbody>
-</table>
+            <table id="myTable" class="display">
+                <thead>
+                    <tr>
+                        <th>Date of walk</th>
+                        <th>Added by</th>
+                        <th>Meeting time</th>
+                        <th>Meeting location</th>
+                        <th>Length of walk</th>
+                        <th>Useful information</th>
+                    </tr>
+                </thead>
+                <tbody data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8">
+                    <tr>
+                        <td colspan="6" style="text-align:center;">Fetching walks from the calendar...</td>
+                    </tr>
+                </tbody>
+            </table>
 
-<script src="https://sheetdb.io/handlebars.js"></script>
+            <script src="https://sheetdb.io/handlebars.js"></script>
 
             <div class="links-container">
                 <a href="https://judgepd.github.io/index.html" class="btn">Back</a>
@@ -199,25 +191,28 @@
     </footer>
 	
 <script>
+  // Initialize Date sorting for DD/MM/YYYY format
+  $.fn.dataTable.render.datetime('DD/MM/YYYY');
+
   window.addEventListener('sheetdb-downloaded', function() {
     $('#myTable').DataTable({
         "pageLength": 25,
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        "order": [[ 0, "desc" ]],
+        "order": [[ 0, "desc" ]], // Sorts by date descending
         "responsive": true,
         "columnDefs": [
-            { "responsivePriority": 1, "targets": 0 }, // Date of walk
-            { "responsivePriority": 2, "targets": 3 }, // Meeting location
-            { "responsivePriority": 3, "targets": 2 }, // Meeting time
-            { "responsivePriority": 4, "targets": 1 }, // Added by
-            { "responsivePriority": 5, "targets": 4 }, // Length of walk
-            { "responsivePriority": 6, "targets": 5 }  // Useful information
-        ]
+            { "type": "datetime-luxon", "targets": 0 }, // Precise date sorting
+            { "responsivePriority": 1, "targets": 0 }, 
+            { "responsivePriority": 2, "targets": 3 }, 
+            { "responsivePriority": 3, "targets": 2 }, 
+            { "responsivePriority": 4, "targets": 1 }, 
+            { "responsivePriority": 5, "targets": 4 }, 
+            { "responsivePriority": 6, "targets": 5 }  
+        ],
+        "destroy": true // Allows re-initialization after SheetDB injects rows
     });
   });
 </script>
 
 </body>
 </html>
-
-
