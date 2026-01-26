@@ -16,6 +16,45 @@
     <script src="https://cdn.datatables.net/plug-ins/2.1.8/sorting/datetime-luxon.js"></script>
 
     <style>
+
+        
+
+.cal-link {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    color: white !important;
+    font-family: Arial, sans-serif;
+    margin: 0 4px;
+    font-size: 16px;
+}
+.g-cal { background-color: #4285F4; } /* Google Blue */
+.a-cal { background-color: #000000; } /* Apple Black */
+.cal-link:hover { opacity: 0.7; }
+
+
+.cal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-decoration: none !important;
+    font-size: 11px;
+    font-weight: bold;
+    color: white !important;
+    margin-right: 5px;
+}
+.google { background-color: #4285F4; } /* Google Blue */
+.apple { background-color: #000000; }  /* Apple Black */
+.cal-btn:hover { opacity: 0.8; }
+
         :root {
             --bg-body: #f4f7f1;
             --header-bg: #0f1f0d;
@@ -157,30 +196,59 @@
 
     <div class="container">
         <main class="content">
-            <h2>Upcoming Walks</h2>
+            <h2>Viewing walks</h2>
 
-            <table id="myTable" class="display">
-                <thead>
-                    <tr>
-                        <th>Date of walk</th>
-                        <th>Added by</th>
-                        <th>Meeting time</th>
-                        <th>Meeting location</th>
-                        <th>Length of walk</th>
-                        <th>Useful information</th>
-                    </tr>
-                </thead>
-                <tbody data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8">
-                    <tr>
-                        <td colspan="6" style="text-align:center;">Fetching walks from the calendar...</td>
-                    </tr>
-                </tbody>
-            </table>
+    <table id="myTable" class="display">
+  <thead>
+    <tr>
+      <th>Date of walk</th>
+	  <th>Added by</th>
+      <th>Mobile number</th>
+      <th>Meeting time</th>
+      <th>Meeting location</th>
+	  <th>Length of walk</th>
+      <th>Useful information</th>
+      <th>Add to calendar</th>
+	</tr>
+  </thead>
+  <tbody data-sheetdb-url="https://sheetdb.io/api/v1/eag1jns4ulxm8"
+         data-sheetdb-sort-by="age"
+         data-sheetdb-sort-order="desc">
+    <tr>
+      <td>{{Date of walk}}</td>
+      <td>{{Forename}} {{Surname}}</td>
+      <td>{{Mobile phone number}}</td>
+      <td>{{Meeting time}}</td>
+      <td>{{Meeting location}}</td>
+	  <td>{{Length of walk}}</td>
+	  <td>{{Useful information}}</td>
+<td>
+  <span class="cal-link g-cal" 
+        data-type="google" 
+        data-title="Powick Ramblers" 
+        data-date="{{Date of walk}}" 
+        data-time="{{Meeting time}}" 
+        data-loc="{{Meeting location}}"
+        data-info="{{Useful information}}"
+        data-leader="{{Forename}} {{Surname}}">+</span>
 
-            <script src="https://sheetdb.io/handlebars.js"></script>
+  <span class="cal-link a-cal" 
+        data-type="apple" 
+        data-title="Powick Ramblers" 
+        data-date="{{Date of walk}}" 
+        data-time="{{Meeting time}}" 
+        data-loc="{{Meeting location}}"
+        data-info="{{Useful information}}"
+        data-leader="{{Forename}} {{Surname}}">+</span>
+</td>
+    </tr>
+  </tbody>
+</table>
+
+<script src="https://sheetdb.io/handlebars.js"></script>
 
             <div class="links-container">
-                <a href="https://judgepd.github.io/index.html" class="btn">Back</a>
+                <a href="/index.html" class="btn">Back</a>
                 <a href="https://forms.gle/9hT7F9uQtR1PFgSa8" class="btn btn-secondary" target="_blank">Add a new walk</a>
             </div>
         </main>
@@ -212,6 +280,46 @@
         "destroy": true // Allows re-initialization after SheetDB injects rows
     });
   });
+</script>
+
+<script>
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('cal-link')) {
+        const d = e.target.dataset;
+        
+        // Date parsing logic
+        let parts = d.date.split(/[-/]/);
+        let dateObj;
+        if (parts[0].length === 4) { 
+            dateObj = new Date(`${d.date} ${d.time}`);
+        } else { 
+            dateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]} ${d.time}`);
+        }
+
+        if (isNaN(dateObj)) return;
+
+        const formatCal = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
+        const start = formatCal(dateObj);
+        const end = formatCal(new Date(dateObj.getTime() + 7200000)); 
+
+        // Combine Leader and Useful Info for the description
+        const description = `Walk Leader: ${d.leader}\n\nNotes: ${d.info}`;
+
+        if (d.type === 'google') {
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(d.title)}&dates=${start}/${end}&location=${encodeURIComponent(d.loc)}&details=${encodeURIComponent(description)}`;
+            window.open(url, '_blank');
+        } else {
+            // Apple .ics format (using \n for line breaks)
+            const icsDescription = description.replace(/\n/g, '\\n');
+            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${d.title}\nDTSTART:${start}\nDTEND:${end}\nLOCATION:${d.loc}\nDESCRIPTION:${icsDescription}\nEND:VEVENT\nEND:VCALENDAR`;
+            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'walk-event.ics');
+            link.click();
+        }
+    }
+});
 </script>
 
 </body>
