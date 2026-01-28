@@ -187,14 +187,16 @@
                         <div class="walk-card">
                             <div class="walk-header-info">
                                 <div class="walk-date">${formatDisplayDate(w['Date of walk'])}</div>
-                                <div style="color:#666; font-weight:600;">Leader: ${w['Forename']} ${w['Surname']}</div>
+                                <div style="color:#666; font-weight:600;">Leader: ${w['Forename']} ${w['Surname']}, </div>
+                                
+                                <div style="color:#666; font-weight:600;">Contact: ${w['Mobile phone number']}, </div>
                             </div>
                             <div class="walk-stats-info">
                                 <div><span class="label">Time:</span> ${w['Meeting time']}</div>
                                 <div><span class="label">Location:</span> ${w['Meeting location']}</div>
                                 <div><span class="label">Distance:</span> ${w['Length of walk']}</div>
                             </div>
-                            ${w['Useful information'] ? `<div class="walk-info-box"><strong>Note:</strong> ${w['Useful information']}</div>` : ''}
+                            ${w['Useful information'] ? `<div class="walk-info-box"><strong>Useful information:</strong> ${w['Useful information']}</div>` : ''}
                         </div>
                     `).join('');
                 }
